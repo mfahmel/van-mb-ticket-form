@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Managed Buyer Support</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: #e6eef5;
+    color: #33475b;
+    min-height: 100vh;
+    padding: 40px 16px;
+  }
+  .form-container {
+    background: #ffffff;
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 40px 48px 48px;
+    border: 1px solid #d7e0e8;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+  }
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    margin-bottom: 52px;
+  }
+  .logo { display: flex; align-items: baseline; }
+  .logo .v, .logo .a, .logo .n {
+    font-size: 82px;
+    font-weight: 700;
+    letter-spacing: -5px;
+    line-height: 0.9;
+    font-family: Arial, sans-serif;
+  }
+  .logo .v { color: #8dc63f; margin-right: -4px; }
+  .logo .a { color: #8dc63f; margin-right: -2px; }
+  .logo .n { color: #1c6eb3; }
+  .title {
+    color: #33475b;
+    font-size: 28px;
+    margin: 0;
+    font-weight: 600;
+  }
+  .section-heading {
+    color: #1c6eb3;
+    font-size: 16px;
+    font-weight: 700;
+    margin: 32px 0 16px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #d7e0e8;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+  }
+  .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .field { margin-bottom: 20px; }
+  label {
+    font-size: 13px;
+    color: #33475b;
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .sublabel {
+    font-size: 11px;
+    color: #7c98b6;
+    display: block;
+    margin-top: -3px;
+    margin-bottom: 6px;
+    font-weight: 400;
+  }
+  .req { color: #d14343; font-weight: 700; margin-left: 2px; }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="number"],
+  select,
+  textarea {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #cbd6e2;
+    border-radius: 3px;
+    background: #f5f8fa;
+    font-size: 14px;
+    font-family: inherit;
+    color: #33475b;
+    outline: none;
+    box-sizing: border-box;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: #1c6eb3;
+    background: #ffffff;
+  }
+  textarea { min-height: 96px; resize: vertical; }
+  textarea.monospace {
+    font-family: "SF Mono", Monaco, Consolas, "Courier New", monospace;
+    font-size: 13px;
+    min-height: 70px;
+  }
+  select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 7'%3e%3cpath fill='%23516f90' d='M0 0l5 7 5-7z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 10px;
+    padding-right: 32px;
+  }
+
+  .radio-inline, .checkbox-row, .checkbox-grid, .checkbox-stack {
+    font-size: 13px;
+    margin-top: 6px;
+  }
+  .radio-inline { display: flex; gap: 20px; flex-wrap: wrap; }
+  .checkbox-row { display: flex; flex-wrap: wrap; gap: 16px; }
+  .checkbox-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 20px; }
+  .checkbox-stack { display: flex; flex-direction: column; gap: 6px; }
+  .radio-inline label, .checkbox-row label, .checkbox-grid label, .checkbox-stack label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    font-weight: 400;
+    cursor: pointer;
+  }
+  .radio-inline input, .checkbox-row input, .checkbox-grid input, .checkbox-stack input {
+    margin: 0;
+    cursor: pointer;
+  }
+
+  .file-upload {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+  }
+  .file-btn {
+    background: #ffffff;
+    border: 1px solid #8a8a8a;
+    padding: 2px 8px;
+    font-size: 13px;
+    cursor: pointer;
+    border-radius: 2px;
+    font-family: inherit;
+    color: #000000;
+    line-height: 1.8;
+  }
+  .file-name { font-size: 13px; color: #33475b; }
+
+  .conditional { display: none; }
+  .conditional.show { display: block; }
+
+  .recaptcha {
+    display: flex;
+    align-items: center;
+    background: #f9f9f9;
+    border: 1px solid #d3d3d3;
+    border-radius: 3px;
+    width: 304px;
+    height: 78px;
+    margin: 24px 0 20px;
+    padding: 0;
+    overflow: hidden;
+  }
+  .recaptcha-blue {
+    width: 202px;
+    height: 100%;
+    background: #4285f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    padding: 0 8px;
+  }
+  .recaptcha-white {
+    flex: 1;
+    height: 100%;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .recaptcha-white svg { width: 44px; height: 44px; }
+
+  button[type="submit"] {
+    background: #1c6eb3;
+    color: white;
+    border: none;
+    padding: 10px 28px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 3px;
+    cursor: pointer;
+    font-family: inherit;
+    margin-top: 8px;
+  }
+  button[type="submit"]:hover { background: #155a96; }
+</style>
+</head>
+<body>
+
+  <form class="form-container" id="ticket-form" onsubmit="event.preventDefault(); alert('Form submitted');">
+
+    <div class="header">
+      <div class="logo"><span class="v">V</span><span class="a">A</span><span class="n">N</span></div>
+      <h2 class="title">Managed Buyer Support</h2>
+    </div>
+
+    <!-- ========== ALWAYS VISIBLE ========== -->
+
+    <div class="field">
+      <label>Have you already submitted a ticket about this?<span class="req">*</span></label>
+      <span class="sublabel">Helps us avoid duplicates</span>
+      <div class="radio-inline">
+        <label><input type="radio" name="dedupe" value="no" required> No, this is the first time</label>
+        <label><input type="radio" name="dedupe" value="yes"> Yes, I already submitted one</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>I am a<span class="req">*</span></label>
+      <span class="sublabel">Dealers go to a separate priority queue (Nelson)</span>
+      <div class="radio-inline">
+        <label><input type="radio" name="user-type" value="managed-buyer" required> Managed Buyer</label>
+        <label><input type="radio" name="user-type" value="dealer"> Dealer</label>
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Email<span class="req">*</span></label>
+        <input type="email" name="email" required>
+      </div>
+      <div>
+        <label>Dealership account<span class="req">*</span></label>
+        <input type="text" name="dealership" required>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Impact on your work<span class="req">*</span></label>
+      <span class="sublabel">Describes your impact. Support sets the final priority.</span>
+      <select name="impact" id="impact" required>
+        <option value="">Please Select</option>
+        <option value="P1">P1 — Urgent: 0 active FB accounts / completely unable to work</option>
+        <option value="P2">P2 — High: 1 active FB account / severely limited</option>
+        <option value="P3">P3 — Medium: affects work but I can continue with workarounds</option>
+        <option value="P4">P4 — Low: minor inconvenience, not blocking</option>
+        <option value="P5">P5 — Info: feedback or suggestion</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Have you checked the knowledge base?<span class="req">*</span></label>
+      <div class="radio-inline">
+        <label><input type="radio" name="kb" value="yes" required> Yes, didn't find a solution</label>
+        <label><input type="radio" name="kb" value="no"> No, haven't checked</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Issue Type<span class="req">*</span></label>
+      <select name="issue-type" id="issue-type" required>
+        <option value="">Please Select</option>
+        <option value="fb-account">FB Account Issue</option>
+        <option value="van-messaging">VAN Platform Bug — Messaging</option>
+        <option value="van-calls">VAN Platform Bug — Calls not working</option>
+        <option value="van-postupdate">VAN Platform Bug — Errors after update</option>
+        <option value="van-vauto">VAN Platform Bug — vAuto sync</option>
+        <option value="van-feature">VAN Platform Bug — Feature not working</option>
+        <option value="kameleo">Kameleo / VPN Issue</option>
+        <option value="request-newfb">Request — New FB account</option>
+        <option value="request-bo">Request — Back Office access</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Issue description<span class="req">*</span></label>
+      <span class="sublabel">Brief description of what, where, when</span>
+      <textarea name="description" required></textarea>
+    </div>
+
+    <!-- ========== FB ACCOUNT ISSUE ========== -->
+    <div class="conditional" id="fb-account-fields">
+      <h3 class="section-heading">FB Account Issue</h3>
+
+      <div class="field">
+        <label>How many active FB accounts do you currently have?<span class="req">*</span></label>
+        <span class="sublabel">Drives priority — 0 → P1, 1 → P2, 2 → P3, 3+ → P4</span>
+        <input type="number" name="fb-active-count" min="0" max="20">
+      </div>
+
+      <div class="field">
+        <label>FB account name<span class="req">*</span></label>
+        <input type="text" name="fb-account-name" placeholder="e.g. FB01, FB02">
+      </div>
+
+      <div class="field">
+        <label>Did you check Kameleo first?<span class="req">*</span></label>
+        <div class="radio-inline">
+          <label><input type="radio" name="fb-kameleo-check" value="yes"> Yes</label>
+          <label><input type="radio" name="fb-kameleo-check" value="no"> No</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>FB account issue type<span class="req">*</span></label>
+        <select name="fb-account-issue">
+          <option value="">Please Select</option>
+          <option>Account disabled</option>
+          <option>Account restricted</option>
+          <option>Marketplace blocked / under review</option>
+          <option>Verification required (video selfie / ID / phone)</option>
+          <option>Password or login issue (code not arriving)</option>
+          <option>Account banned (removed from Back Office)</option>
+          <option>Account keeps reverting to restricted after reactivation</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>What did you see in Kameleo?<span class="req">*</span></label>
+        <select name="fb-kameleo-saw">
+          <option value="">Please Select</option>
+          <option>Profile running normally (green status)</option>
+          <option>Profile shows warning / flag</option>
+          <option>Proxy error / connection failed</option>
+          <option>Browser fingerprint error</option>
+          <option>Profile not loading</option>
+          <option>Checkpoint detected</option>
+          <option>Connection timeout</option>
+          <option>Did not check Kameleo</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Exact error code (if Kameleo showed an error)</label>
+        <input type="text" name="fb-kameleo-error-code" placeholder="Copy exactly as shown">
+      </div>
+
+      <div class="field">
+        <label>Type of verification (if applicable)</label>
+        <select name="fb-verification-type">
+          <option value="">Please Select</option>
+          <option>Video selfie</option>
+          <option>Government-issued ID</option>
+          <option>Phone number (SMS code)</option>
+          <option>Email code</option>
+          <option>Trusted contacts</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Issue screenshot<span class="req">*</span></label>
+        <div class="file-upload">
+          <input type="file" name="fb-screenshot" id="fb-file-input" style="display:none">
+          <button type="button" class="file-btn" onclick="document.getElementById('fb-file-input').click()">Choose File</button>
+          <span class="file-name" id="fb-file-name">No file chosen</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== VAN MESSAGING ========== -->
+    <div class="conditional" id="van-messaging-fields">
+      <h3 class="section-heading">VAN Platform Bug — Messaging</h3>
+
+      <div class="field">
+        <label>FB account used<span class="req">*</span></label>
+        <input type="text" name="msg-fb-account" placeholder="e.g. FB01">
+      </div>
+
+      <div class="field">
+        <label>Engage VDP URL<span class="req">*</span></label>
+        <input type="text" name="msg-vdp-url" placeholder="https://dealer.buywithvan.com/listings/listing/...">
+      </div>
+
+      <div class="field">
+        <label>Already retried?<span class="req">*</span></label>
+        <div class="radio-inline">
+          <label><input type="radio" name="msg-retried" value="yes"> Yes</label>
+          <label><input type="radio" name="msg-retried" value="no"> No</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Additional listing URLs (if more than one affected)</label>
+        <textarea name="msg-extra-urls" placeholder="Paste up to 4 more URLs, one per line"></textarea>
+      </div>
+
+      <div class="field">
+        <label>Issue screenshot<span class="req">*</span></label>
+        <div class="file-upload">
+          <input type="file" name="msg-screenshot" id="msg-file-input" style="display:none">
+          <button type="button" class="file-btn" onclick="document.getElementById('msg-file-input').click()">Choose File</button>
+          <span class="file-name" id="msg-file-name">No file chosen</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== VAN CALLS ========== -->
+    <div class="conditional" id="van-calls-fields">
+      <h3 class="section-heading">VAN Platform Bug — Calls not working</h3>
+
+      <div class="field">
+        <label>Which symptom(s)?<span class="req">*</span></label>
+        <div class="checkbox-grid">
+          <label><input type="checkbox" name="call-no-incoming"> Calls don't ring (incoming)</label>
+          <label><input type="checkbox" name="call-no-outgoing"> Can't place outgoing calls</label>
+          <label><input type="checkbox" name="call-gv-no-ring"> Google Voice doesn't ring on my device</label>
+          <label><input type="checkbox" name="call-no-audio"> Call connects but no audio</label>
+          <label><input type="checkbox" name="call-drop"> Call drops mid-conversation</label>
+          <label><input type="checkbox" name="call-missed"> Missed calls with no notification</label>
+          <label><input type="checkbox" name="call-spam"> Number flagged as spam / blocked by recipient</label>
+          <label><input type="checkbox" name="call-other"> Other</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Your Google Voice number<span class="req">*</span></label>
+        <input type="text" name="call-gv-number" placeholder="e.g. +1 305 555 0100">
+      </div>
+
+      <div class="field">
+        <label>How often does it fail?<span class="req">*</span></label>
+        <select name="call-frequency">
+          <option value="">Please Select</option>
+          <option>Every call (always fails)</option>
+          <option>Most calls (more than half)</option>
+          <option>Occasionally (random)</option>
+          <option>Only with specific listings / phone numbers</option>
+          <option>Started after a recent VAN update</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Engage VDP URL<span class="req">*</span></label>
+        <span class="sublabel">Phone number may be bad on the listing</span>
+        <input type="text" name="call-vdp-url">
+      </div>
+
+      <div class="field">
+        <label>Did you ask the team?</label>
+        <div class="radio-inline">
+          <label><input type="radio" name="call-team" value="others"> Yes, others affected too</label>
+          <label><input type="radio" name="call-team" value="only-me"> Yes, only me</label>
+          <label><input type="radio" name="call-team" value="no"> Didn't ask</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== VAN POST-UPDATE ========== -->
+    <div class="conditional" id="van-postupdate-fields">
+      <h3 class="section-heading">VAN Platform Bug — Errors after update</h3>
+
+      <div class="field">
+        <label>Which symptom(s)?<span class="req">*</span></label>
+        <div class="checkbox-grid">
+          <label><input type="checkbox" name="pu-blank"> Blank page after logging in</label>
+          <label><input type="checkbox" name="pu-stuck"> Page stuck / infinite loading</label>
+          <label><input type="checkbox" name="pu-disappeared"> Feature or button disappeared</label>
+          <label><input type="checkbox" name="pu-dash"> Dashboard not loading</label>
+          <label><input type="checkbox" name="pu-error-action"> Error message when performing an action</label>
+          <label><input type="checkbox" name="pu-slow"> Platform noticeably slower than usual</label>
+          <label><input type="checkbox" name="pu-broken"> Layout broken or elements misaligned</label>
+          <label><input type="checkbox" name="pu-other"> Other</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Which area of VAN?<span class="req">*</span></label>
+        <div class="checkbox-grid">
+          <label><input type="checkbox" name="pu-area-engage"> Engage (messaging / conversations)</label>
+          <label><input type="checkbox" name="pu-area-inv"> Inventory / listings</label>
+          <label><input type="checkbox" name="pu-area-vdp"> VDP (Vehicle Detail Page)</label>
+          <label><input type="checkbox" name="pu-area-dash"> Dashboard / analytics</label>
+          <label><input type="checkbox" name="pu-area-bo"> Back Office</label>
+          <label><input type="checkbox" name="pu-area-rep"> Reports</label>
+          <label><input type="checkbox" name="pu-area-comm"> Communication / calls</label>
+          <label><input type="checkbox" name="pu-area-todo"> To-Do / task list</label>
+          <label><input type="checkbox" name="pu-area-vauto"> vAuto sync</label>
+          <label><input type="checkbox" name="pu-area-other"> Other</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Issue screenshot<span class="req">*</span></label>
+        <div class="file-upload">
+          <input type="file" name="pu-screenshot" id="pu-file-input" style="display:none">
+          <button type="button" class="file-btn" onclick="document.getElementById('pu-file-input').click()">Choose File</button>
+          <span class="file-name" id="pu-file-name">No file chosen</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Did you ask the team?<span class="req">*</span></label>
+        <div class="radio-inline">
+          <label><input type="radio" name="pu-team" value="others"> Yes, others affected too</label>
+          <label><input type="radio" name="pu-team" value="only-me"> Yes, only me</label>
+          <label><input type="radio" name="pu-team" value="no"> Didn't ask</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Browser used</label>
+        <select name="pu-browser">
+          <option value="">Please Select</option>
+          <option>Chrome</option>
+          <option>Firefox</option>
+          <option>Edge</option>
+          <option>Safari</option>
+          <option>Other</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- ========== VAN vAUTO SYNC ========== -->
+    <div class="conditional" id="van-vauto-fields">
+      <h3 class="section-heading">VAN Platform Bug — vAuto sync</h3>
+
+      <div class="field">
+        <label>Vehicle VIN<span class="req">*</span></label>
+        <input type="text" name="vauto-vin">
+      </div>
+
+      <div class="field">
+        <label>Which data fields are missing or wrong?<span class="req">*</span></label>
+        <div class="checkbox-grid">
+          <label><input type="checkbox" name="vauto-vin-field"> VIN</label>
+          <label><input type="checkbox" name="vauto-ymmt"> Year / Make / Model / Trim</label>
+          <label><input type="checkbox" name="vauto-price"> Price / asking price</label>
+          <label><input type="checkbox" name="vauto-mileage"> Mileage / odometer</label>
+          <label><input type="checkbox" name="vauto-photos"> Vehicle photos / images</label>
+          <label><input type="checkbox" name="vauto-color-ext"> Exterior color</label>
+          <label><input type="checkbox" name="vauto-color-int"> Interior color</label>
+          <label><input type="checkbox" name="vauto-features"> Features / options list</label>
+          <label><input type="checkbox" name="vauto-recon"> Recon notes</label>
+          <label><input type="checkbox" name="vauto-condition"> Condition rating</label>
+          <label><input type="checkbox" name="vauto-other"> Other</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>VAN status indicator<span class="req">*</span></label>
+        <div class="radio-inline">
+          <label><input type="radio" name="vauto-status" value="synced"> Shows synced</label>
+          <label><input type="radio" name="vauto-status" value="error"> Shows error</label>
+          <label><input type="radio" name="vauto-status" value="pending"> Shows pending</label>
+          <label><input type="radio" name="vauto-status" value="other"> Other</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Push output error<span class="req">*</span></label>
+        <span class="sublabel">When you pushed to vAuto, did VAN show an error?</span>
+        <div class="radio-inline">
+          <label><input type="radio" name="vauto-push-error" value="yes"> Yes — got an error</label>
+          <label><input type="radio" name="vauto-push-error" value="no"> No — push appeared successful</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Screenshot of VAN push status<span class="req">*</span></label>
+        <div class="file-upload">
+          <input type="file" name="vauto-screenshot-van" id="vauto-file-input" style="display:none">
+          <button type="button" class="file-btn" onclick="document.getElementById('vauto-file-input').click()">Choose File</button>
+          <span class="file-name" id="vauto-file-name">No file chosen</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Screenshot of vAuto (showing missing data)</label>
+        <div class="file-upload">
+          <input type="file" name="vauto-screenshot-vauto" id="vauto-file-input-2" style="display:none">
+          <button type="button" class="file-btn" onclick="document.getElementById('vauto-file-input-2').click()">Choose File</button>
+          <span class="file-name" id="vauto-file-name-2">No file chosen</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== VAN FEATURE NOT WORKING ========== -->
+    <div class="conditional" id="van-feature-fields">
+      <h3 class="section-heading">VAN Platform Bug — Feature not working</h3>
+
+      <div class="field">
+        <label>Which feature?<span class="req">*</span></label>
+        <span class="sublabel">Free text — too many features for a dropdown</span>
+        <textarea name="feature-which" placeholder="e.g. Plate to VIN, Push to vAuto, Inventory column drag, Date range filter..."></textarea>
+      </div>
+
+      <div class="field">
+        <label>What happens when you try to use it?<span class="req">*</span></label>
+        <textarea name="feature-happens"></textarea>
+      </div>
+
+      <div class="field">
+        <label>Exact error message (if any)</label>
+        <input type="text" name="feature-error-msg">
+      </div>
+
+      <div class="field">
+        <label>Data you were using when it failed<span class="req">*</span></label>
+        <input type="text" name="feature-data" placeholder="e.g. plate + state, or VIN, or specific listing">
+      </div>
+
+      <div class="field">
+        <label>Issue screenshot<span class="req">*</span></label>
+        <div class="file-upload">
+          <input type="file" name="feature-screenshot" id="feature-file-input" style="display:none">
+          <button type="button" class="file-btn" onclick="document.getElementById('feature-file-input').click()">Choose File</button>
+          <span class="file-name" id="feature-file-name">No file chosen</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== KAMELEO / VPN ========== -->
+    <div class="conditional" id="kameleo-fields">
+      <h3 class="section-heading">Kameleo / VPN Issue</h3>
+
+      <div class="field">
+        <label>What problem do you see?<span class="req">*</span></label>
+        <span class="sublabel">Free text for now — checkboxes will come once patterns emerge</span>
+        <textarea name="km-problem"></textarea>
+      </div>
+
+      <div class="field">
+        <label>Specific error seen</label>
+        <textarea name="km-error-seen"></textarea>
+      </div>
+
+      <div class="field">
+        <label>Exact error code or message<span class="req">*</span></label>
+        <textarea class="monospace" name="km-error-msg" placeholder="Copy exactly as shown in Kameleo"></textarea>
+      </div>
+
+      <div class="field">
+        <label>What have you tried?</label>
+        <textarea name="km-tried" placeholder="e.g. restarted Kameleo, restarted PC, reinstalled with Revo..."></textarea>
+      </div>
+
+      <div class="field">
+        <label>Did you ask the team in Chat?</label>
+        <div class="radio-inline">
+          <label><input type="radio" name="km-team" value="others"> Yes, others affected too</label>
+          <label><input type="radio" name="km-team" value="only-me"> Yes, only me</label>
+          <label><input type="radio" name="km-team" value="no"> Didn't ask yet</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Issue screenshot<span class="req">*</span></label>
+        <div class="file-upload">
+          <input type="file" name="km-screenshot" id="km-file-input" style="display:none">
+          <button type="button" class="file-btn" onclick="document.getElementById('km-file-input').click()">Choose File</button>
+          <span class="file-name" id="km-file-name">No file chosen</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== REQUEST — NEW FB ACCOUNT ========== -->
+    <div class="conditional" id="request-newfb-fields">
+      <h3 class="section-heading">Request — New FB account</h3>
+
+      <div class="field">
+        <label>How many accounts do you have that are currently operational?<span class="req">*</span></label>
+        <input type="number" name="newfb-active" min="0" max="20">
+      </div>
+
+      <div class="field">
+        <label>Which accounts are blocked? (names)</label>
+        <input type="text" name="newfb-blocked" placeholder="e.g. FB02, FB03">
+      </div>
+
+      <div class="field">
+        <label>Already requested via Chat or email?<span class="req">*</span></label>
+        <div class="radio-inline">
+          <label><input type="radio" name="newfb-requested" value="yes"> Yes</label>
+          <label><input type="radio" name="newfb-requested" value="no"> No</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>How many days has it been since you had fewer than 3 accounts?<span class="req">*</span></label>
+        <input type="number" name="newfb-days" min="0" max="365">
+      </div>
+
+      <div class="field">
+        <label>Your manager</label>
+        <input type="text" name="newfb-manager">
+      </div>
+    </div>
+
+    <!-- ========== REQUEST — BACK OFFICE ACCESS ========== -->
+    <div class="conditional" id="request-bo-fields">
+      <h3 class="section-heading">Request — Back Office access</h3>
+
+      <div class="field">
+        <label>Reason for the request<span class="req">*</span></label>
+        <select name="bo-reason">
+          <option value="">Please Select</option>
+          <option>Can't log in (forgot credentials)</option>
+          <option>Account locked or suspended</option>
+          <option>Never received access</option>
+          <option>Need access to an additional dealership location</option>
+          <option>Wrong permissions showing</option>
+          <option>Technical error on login page</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Error message when trying to log in?<span class="req">*</span></label>
+        <div class="radio-inline">
+          <label><input type="radio" name="bo-error" id="bo-error-yes" value="yes"> Yes</label>
+          <label><input type="radio" name="bo-error" id="bo-error-no" value="no"> No</label>
+        </div>
+      </div>
+
+      <div class="field conditional" id="bo-error-msg-wrap">
+        <label>Exact error message</label>
+        <input type="text" name="bo-error-msg">
+      </div>
+
+      <div class="field conditional" id="bo-error-screenshot-wrap">
+        <label>Screenshot of the error</label>
+        <div class="file-upload">
+          <input type="file" name="bo-screenshot" id="bo-file-input" style="display:none">
+          <button type="button" class="file-btn" onclick="document.getElementById('bo-file-input').click()">Choose File</button>
+          <span class="file-name" id="bo-file-name">No file chosen</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Already asked your manager?<span class="req">*</span></label>
+        <div class="radio-inline">
+          <label><input type="radio" name="bo-asked-mgr" value="yes"> Yes</label>
+          <label><input type="radio" name="bo-asked-mgr" value="no"> No</label>
+          <label><input type="radio" name="bo-asked-mgr" value="dunno"> Don't know who to ask</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="recaptcha">
+      <div class="recaptcha-blue">protected by reCAPTCHA</div>
+      <div class="recaptcha-white">
+        <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="32" cy="32" r="26" fill="none" stroke="#4285f4" stroke-width="4"/>
+          <path d="M 32 10 L 32 6 L 24 14 L 32 22 L 32 18 A 14 14 0 0 1 46 32" fill="#4285f4"/>
+          <path d="M 32 54 L 32 58 L 40 50 L 32 42 L 32 46 A 14 14 0 0 1 18 32" fill="#9aa0a6"/>
+          <circle cx="32" cy="32" r="6" fill="none" stroke="#4285f4" stroke-width="2.5"/>
+        </svg>
+      </div>
+    </div>
+
+    <button type="submit">Submit</button>
+  </form>
+
+<script>
+(function() {
+  var issueType = document.getElementById('issue-type');
+
+  function chk(id) { var el = document.getElementById(id); return el ? el.checked : false; }
+
+  var sectionByType = {
+    'fb-account':       'fb-account-fields',
+    'van-messaging':    'van-messaging-fields',
+    'van-calls':        'van-calls-fields',
+    'van-postupdate':   'van-postupdate-fields',
+    'van-vauto':        'van-vauto-fields',
+    'van-feature':      'van-feature-fields',
+    'kameleo':          'kameleo-fields',
+    'request-newfb':    'request-newfb-fields',
+    'request-bo':       'request-bo-fields'
+  };
+
+  function updateVisibility() {
+    var current = issueType.value;
+    for (var key in sectionByType) {
+      var el = document.getElementById(sectionByType[key]);
+      if (!el) continue;
+      if (key === current) el.classList.add('show');
+      else el.classList.remove('show');
+    }
+
+    // Back Office conditional sub-fields (error message + screenshot only if "yes")
+    var boErrorYes = chk('bo-error-yes');
+    var boMsg = document.getElementById('bo-error-msg-wrap');
+    var boScreen = document.getElementById('bo-error-screenshot-wrap');
+    if (boMsg) boMsg.classList.toggle('show', current === 'request-bo' && boErrorYes);
+    if (boScreen) boScreen.classList.toggle('show', current === 'request-bo' && boErrorYes);
+  }
+
+  document.getElementById('ticket-form').addEventListener('change', updateVisibility);
+
+  var fileMap = [
+    ['fb-file-input', 'fb-file-name'],
+    ['msg-file-input', 'msg-file-name'],
+    ['pu-file-input', 'pu-file-name'],
+    ['vauto-file-input', 'vauto-file-name'],
+    ['vauto-file-input-2', 'vauto-file-name-2'],
+    ['feature-file-input', 'feature-file-name'],
+    ['km-file-input', 'km-file-name'],
+    ['bo-file-input', 'bo-file-name']
+  ];
+  fileMap.forEach(function(pair) {
+    var inp = document.getElementById(pair[0]);
+    var lbl = document.getElementById(pair[1]);
+    if (inp && lbl) {
+      inp.addEventListener('change', function() {
+        lbl.textContent = inp.files.length > 0 ? inp.files[0].name : 'No file chosen';
+      });
+    }
+  });
+
+  updateVisibility();
+})();
+</script>
+</body>
+</html>
