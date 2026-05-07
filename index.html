@@ -284,10 +284,10 @@
       </select>
     </div>
 
-    <div class="field">
+    <div class="field" id="issue-description-wrap">
       <label>Issue description<span class="req">*</span></label>
       <span class="sublabel">Brief description of what, where, when</span>
-      <textarea name="description" required></textarea>
+      <textarea name="description" id="issue-description-input"></textarea>
     </div>
 
     <!-- ========== FB ACCOUNT ISSUE ========== -->
@@ -490,7 +490,6 @@
           <label><input type="checkbox" name="pu-area-rep"> Reports</label>
           <label><input type="checkbox" name="pu-area-comm"> Communication / calls</label>
           <label><input type="checkbox" name="pu-area-todo"> To-Do / task list</label>
-          <label><input type="checkbox" name="pu-area-vauto"> vAuto sync</label>
           <label><input type="checkbox" name="pu-area-other"> Other</label>
         </div>
       </div>
@@ -540,14 +539,8 @@
         <div class="checkbox-grid">
           <label><input type="checkbox" name="vauto-vin-field"> VIN</label>
           <label><input type="checkbox" name="vauto-ymmt"> Year / Make / Model / Trim</label>
-          <label><input type="checkbox" name="vauto-price"> Price / asking price</label>
           <label><input type="checkbox" name="vauto-mileage"> Mileage / odometer</label>
-          <label><input type="checkbox" name="vauto-photos"> Vehicle photos / images</label>
-          <label><input type="checkbox" name="vauto-color-ext"> Exterior color</label>
-          <label><input type="checkbox" name="vauto-color-int"> Interior color</label>
-          <label><input type="checkbox" name="vauto-features"> Features / options list</label>
-          <label><input type="checkbox" name="vauto-recon"> Recon notes</label>
-          <label><input type="checkbox" name="vauto-condition"> Condition rating</label>
+          <label><input type="checkbox" name="vauto-nothing"> Nothing is being pushed (entire vehicle missing)</label>
           <label><input type="checkbox" name="vauto-other"> Other</label>
         </div>
       </div>
@@ -596,32 +589,8 @@
 
       <div class="field">
         <label>Which feature?<span class="req">*</span></label>
-        <span class="sublabel">Free text — too many features for a dropdown</span>
-        <textarea name="feature-which" placeholder="e.g. Plate to VIN, Push to vAuto, Inventory column drag, Date range filter..."></textarea>
-      </div>
-
-      <div class="field">
-        <label>What happens when you try to use it?<span class="req">*</span></label>
-        <textarea name="feature-happens"></textarea>
-      </div>
-
-      <div class="field">
-        <label>Exact error message (if any)</label>
-        <input type="text" name="feature-error-msg">
-      </div>
-
-      <div class="field">
-        <label>Data you were using when it failed<span class="req">*</span></label>
-        <input type="text" name="feature-data" placeholder="e.g. plate + state, or VIN, or specific listing">
-      </div>
-
-      <div class="field">
-        <label>Issue screenshot<span class="req">*</span></label>
-        <div class="file-upload">
-          <input type="file" name="feature-screenshot" id="feature-file-input" style="display:none">
-          <button type="button" class="file-btn" onclick="document.getElementById('feature-file-input').click()">Choose File</button>
-          <span class="file-name" id="feature-file-name">No file chosen</span>
-        </div>
+        <span class="sublabel">Describe the feature, what happens when you use it, any error message, and what data you were using. Mary will reply on the ticket if more detail is needed.</span>
+        <textarea name="feature-which" placeholder="e.g. Plate to VIN with NY plate ABC123 — keeps spinning forever, no error message" style="min-height:140px"></textarea>
       </div>
     </div>
 
@@ -636,17 +605,12 @@
       </div>
 
       <div class="field">
-        <label>Specific error seen</label>
-        <textarea name="km-error-seen"></textarea>
-      </div>
-
-      <div class="field">
         <label>Exact error code or message<span class="req">*</span></label>
         <textarea class="monospace" name="km-error-msg" placeholder="Copy exactly as shown in Kameleo"></textarea>
       </div>
 
       <div class="field">
-        <label>What have you tried?</label>
+        <label>What have you tried?<span class="req">*</span></label>
         <textarea name="km-tried" placeholder="e.g. restarted Kameleo, restarted PC, reinstalled with Revo..."></textarea>
       </div>
 
@@ -674,31 +638,73 @@
       <h3 class="section-heading">Request — New FB account</h3>
 
       <div class="field">
-        <label>How many accounts do you have that are currently operational?<span class="req">*</span></label>
-        <input type="number" name="newfb-active" min="0" max="20">
+        <label>Reason for request<span class="req">*</span></label>
+        <select name="newfb-reason" id="newfb-reason">
+          <option value="">Please Select</option>
+          <option value="banned">Account got banned (removed from Back Office)</option>
+          <option value="additional">Need an additional account (current ones still active)</option>
+          <option value="changed-dealer">Changed dealer (new account needed)</option>
+          <option value="permanent">Account permanently disabled and can't recover</option>
+          <option value="other">Other</option>
+        </select>
       </div>
 
-      <div class="field">
-        <label>Which accounts are blocked? (names)</label>
-        <input type="text" name="newfb-blocked" placeholder="e.g. FB02, FB03">
-      </div>
+      <!-- ===== Managed Buyer flow ===== -->
+      <div class="conditional" id="newfb-mb-fields">
+        <div class="field">
+          <label>How many accounts do you have that are currently operational?<span class="req">*</span></label>
+          <input type="number" name="newfb-active" min="0" max="20">
+        </div>
 
-      <div class="field">
-        <label>Already requested via Chat or email?<span class="req">*</span></label>
-        <div class="radio-inline">
-          <label><input type="radio" name="newfb-requested" value="yes"> Yes</label>
-          <label><input type="radio" name="newfb-requested" value="no"> No</label>
+        <div class="field">
+          <label>Which accounts are blocked? (names)</label>
+          <input type="text" name="newfb-blocked" placeholder="e.g. FB02, FB03">
+        </div>
+
+        <div class="field">
+          <label>Already requested via Chat or email?<span class="req">*</span></label>
+          <div class="radio-inline">
+            <label><input type="radio" name="newfb-requested" value="yes"> Yes</label>
+            <label><input type="radio" name="newfb-requested" value="no"> No</label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>How many days has it been since you had fewer than 3 accounts?<span class="req">*</span></label>
+          <input type="number" name="newfb-days" min="0" max="365">
+        </div>
+
+        <div class="field">
+          <label>Your manager</label>
+          <input type="text" name="newfb-manager">
         </div>
       </div>
 
-      <div class="field">
-        <label>How many days has it been since you had fewer than 3 accounts?<span class="req">*</span></label>
-        <input type="number" name="newfb-days" min="0" max="365">
-      </div>
+      <!-- ===== Dealer flow ===== -->
+      <div class="conditional" id="newfb-dealer-fields">
+        <div class="field">
+          <label>How will you provide the account?<span class="req">*</span></label>
+          <div class="radio-inline">
+            <label><input type="radio" name="newfb-provide" id="newfb-provide-connect" value="connect"> Connect personal account</label>
+            <label><input type="radio" name="newfb-provide" id="newfb-provide-create" value="create"> Create a new account</label>
+          </div>
+        </div>
 
-      <div class="field">
-        <label>Your manager</label>
-        <input type="text" name="newfb-manager">
+        <div class="field conditional" id="newfb-connect-fields">
+          <label>Your FB username<span class="req">*</span></label>
+          <span class="sublabel">We'll contact you through a secure channel for password and PIN — never put credentials in this ticket.</span>
+          <input type="text" name="newfb-fb-username" placeholder="facebook.com/your.username">
+        </div>
+
+        <div class="field conditional" id="newfb-create-fields">
+          <label>Photo upload instructions</label>
+          <span class="sublabel">HubSpot doesn't support multiple file uploads here, so:</span>
+          <div style="background:#f5f8fa;border:1px solid #cbd6e2;border-radius:3px;padding:12px;font-size:13px;line-height:1.5;">
+            Send the photos required for the new account to <strong>accounts@buywithvan.com</strong>.<br>
+            Subject: <strong>"New FB account photos — [your name]"</strong><br>
+            Once we receive both this ticket and your email, Nelson will start the account creation.
+          </div>
+        </div>
       </div>
     </div>
 
@@ -772,6 +778,10 @@
   var issueType = document.getElementById('issue-type');
 
   function chk(id) { var el = document.getElementById(id); return el ? el.checked : false; }
+  function val(name) {
+    var el = document.querySelector('input[name="' + name + '"]:checked');
+    return el ? el.value : '';
+  }
 
   var sectionByType = {
     'fb-account':       'fb-account-fields',
@@ -785,6 +795,14 @@
     'request-bo':       'request-bo-fields'
   };
 
+  // v5: Issue description global is hidden for these types (their own fields cover it).
+  var typesWithoutDescription = {
+    'van-feature': true,
+    'kameleo': true,
+    'request-newfb': true,
+    'request-bo': true
+  };
+
   function updateVisibility() {
     var current = issueType.value;
     for (var key in sectionByType) {
@@ -794,12 +812,40 @@
       else el.classList.remove('show');
     }
 
+    // v5: Hide global Issue description for types where it's redundant.
+    var descWrap = document.getElementById('issue-description-wrap');
+    var descInput = document.getElementById('issue-description-input');
+    if (descWrap && descInput) {
+      var hideDescription = typesWithoutDescription[current] === true;
+      descWrap.style.display = hideDescription ? 'none' : '';
+      descInput.required = !hideDescription && current !== '';
+      if (hideDescription) descInput.value = '';
+    }
+
     // Back Office conditional sub-fields (error message + screenshot only if "yes")
     var boErrorYes = chk('bo-error-yes');
     var boMsg = document.getElementById('bo-error-msg-wrap');
     var boScreen = document.getElementById('bo-error-screenshot-wrap');
     if (boMsg) boMsg.classList.toggle('show', current === 'request-bo' && boErrorYes);
     if (boScreen) boScreen.classList.toggle('show', current === 'request-bo' && boErrorYes);
+
+    // v5: New FB account — toggle MB vs Dealer sub-flow based on user-type.
+    var userType = val('user-type');
+    var newfbMB = document.getElementById('newfb-mb-fields');
+    var newfbDealer = document.getElementById('newfb-dealer-fields');
+    if (newfbMB && newfbDealer) {
+      var isNewFB = current === 'request-newfb';
+      newfbMB.classList.toggle('show', isNewFB && userType === 'managed-buyer');
+      newfbDealer.classList.toggle('show', isNewFB && userType === 'dealer');
+    }
+
+    // v5: New FB → Dealer — toggle connect/create sub-fields.
+    var provide = val('newfb-provide');
+    var connectWrap = document.getElementById('newfb-connect-fields');
+    var createWrap = document.getElementById('newfb-create-fields');
+    var dealerNewFB = current === 'request-newfb' && userType === 'dealer';
+    if (connectWrap) connectWrap.classList.toggle('show', dealerNewFB && provide === 'connect');
+    if (createWrap) createWrap.classList.toggle('show', dealerNewFB && provide === 'create');
   }
 
   document.getElementById('ticket-form').addEventListener('change', updateVisibility);
