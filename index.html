@@ -218,6 +218,8 @@
 
     <!-- ========== ALWAYS VISIBLE ========== -->
 
+    <!-- ===== STEP 1: gates ===== -->
+
     <div class="field">
       <label>Have you already submitted a ticket about this?<span class="req">*</span></label>
       <span class="sublabel">Helps us avoid duplicates</span>
@@ -226,6 +228,16 @@
         <label><input type="radio" name="dedupe" value="yes"> Yes, I already submitted one</label>
       </div>
     </div>
+
+    <div class="field">
+      <label>Have you checked the knowledge base?<span class="req">*</span></label>
+      <div class="radio-inline">
+        <label><input type="radio" name="kb" value="yes" required> Yes, didn't find a solution</label>
+        <label><input type="radio" name="kb" value="no"> No, haven't checked</label>
+      </div>
+    </div>
+
+    <!-- ===== STEP 2: identity ===== -->
 
     <div class="field">
       <label>I am a<span class="req">*</span></label>
@@ -247,26 +259,7 @@
       </div>
     </div>
 
-    <div class="field">
-      <label>Impact on your work<span class="req">*</span></label>
-      <span class="sublabel">Describes your impact. Support sets the final priority.</span>
-      <select name="impact" id="impact" required>
-        <option value="">Please Select</option>
-        <option value="P1">P1 — Urgent: 0 active FB accounts / completely unable to work</option>
-        <option value="P2">P2 — High: 1 active FB account / severely limited</option>
-        <option value="P3">P3 — Medium: affects work but I can continue with workarounds</option>
-        <option value="P4">P4 — Low: minor inconvenience, not blocking</option>
-        <option value="P5">P5 — Info: feedback or suggestion</option>
-      </select>
-    </div>
-
-    <div class="field">
-      <label>Have you checked the knowledge base?<span class="req">*</span></label>
-      <div class="radio-inline">
-        <label><input type="radio" name="kb" value="yes" required> Yes, didn't find a solution</label>
-        <label><input type="radio" name="kb" value="no"> No, haven't checked</label>
-      </div>
-    </div>
+    <!-- ===== STEP 3: classify the issue ===== -->
 
     <div class="field">
       <label>Issue Type<span class="req">*</span></label>
@@ -284,11 +277,15 @@
       </select>
     </div>
 
+    <!-- ===== STEP 4: describe the issue (skipped for types that capture detail elsewhere) ===== -->
+
     <div class="field" id="issue-description-wrap">
       <label>Issue description<span class="req">*</span></label>
       <span class="sublabel">Brief description of what, where, when</span>
       <textarea name="description" id="issue-description-input"></textarea>
     </div>
+
+    <!-- ===== STEP 5: section-specific fields ===== -->
 
     <!-- ========== FB ACCOUNT ISSUE ========== -->
     <div class="conditional" id="fb-account-fields">
@@ -315,7 +312,7 @@
 
       <div class="field">
         <label>FB account issue type<span class="req">*</span></label>
-        <select name="fb-account-issue">
+        <select name="fb-account-issue" id="fb-account-issue" data-other-for="fb-account-issue-other-wrap">
           <option value="">Please Select</option>
           <option>Account disabled</option>
           <option>Account restricted</option>
@@ -324,13 +321,17 @@
           <option>Password or login issue (code not arriving)</option>
           <option>Account banned (removed from Back Office)</option>
           <option>Account keeps reverting to restricted after reactivation</option>
-          <option>Other</option>
+          <option value="other">Other</option>
         </select>
+      </div>
+      <div class="field conditional" id="fb-account-issue-other-wrap">
+        <label>Please specify "Other"<span class="req">*</span></label>
+        <input type="text" name="fb-account-issue-other-detail">
       </div>
 
       <div class="field">
         <label>What did you see in Kameleo?<span class="req">*</span></label>
-        <select name="fb-kameleo-saw">
+        <select name="fb-kameleo-saw" id="fb-kameleo-saw" data-other-for="fb-kameleo-saw-other-wrap">
           <option value="">Please Select</option>
           <option>Profile running normally (green status)</option>
           <option>Profile shows warning / flag</option>
@@ -340,8 +341,12 @@
           <option>Checkpoint detected</option>
           <option>Connection timeout</option>
           <option>Did not check Kameleo</option>
-          <option>Other</option>
+          <option value="other">Other</option>
         </select>
+      </div>
+      <div class="field conditional" id="fb-kameleo-saw-other-wrap">
+        <label>Please specify "Other"<span class="req">*</span></label>
+        <input type="text" name="fb-kameleo-saw-other-detail">
       </div>
 
       <div class="field">
@@ -351,15 +356,19 @@
 
       <div class="field">
         <label>Type of verification (if applicable)</label>
-        <select name="fb-verification-type">
+        <select name="fb-verification-type" id="fb-verification-type" data-other-for="fb-verification-type-other-wrap">
           <option value="">Please Select</option>
           <option>Video selfie</option>
           <option>Government-issued ID</option>
           <option>Phone number (SMS code)</option>
           <option>Email code</option>
           <option>Trusted contacts</option>
-          <option>Other</option>
+          <option value="other">Other</option>
         </select>
+      </div>
+      <div class="field conditional" id="fb-verification-type-other-wrap">
+        <label>Please specify "Other"<span class="req">*</span></label>
+        <input type="text" name="fb-verification-type-other-detail">
       </div>
 
       <div class="field">
@@ -423,8 +432,12 @@
           <label><input type="checkbox" name="call-drop"> Call drops mid-conversation</label>
           <label><input type="checkbox" name="call-missed"> Missed calls with no notification</label>
           <label><input type="checkbox" name="call-spam"> Number flagged as spam / blocked by recipient</label>
-          <label><input type="checkbox" name="call-other"> Other</label>
+          <label><input type="checkbox" name="call-other" id="call-other" data-other-for="call-other-wrap"> Other</label>
         </div>
+      </div>
+      <div class="field conditional" id="call-other-wrap">
+        <label>Please specify "Other"<span class="req">*</span></label>
+        <input type="text" name="call-other-detail">
       </div>
 
       <div class="field">
@@ -434,15 +447,19 @@
 
       <div class="field">
         <label>How often does it fail?<span class="req">*</span></label>
-        <select name="call-frequency">
+        <select name="call-frequency" id="call-frequency" data-other-for="call-frequency-other-wrap">
           <option value="">Please Select</option>
           <option>Every call (always fails)</option>
           <option>Most calls (more than half)</option>
           <option>Occasionally (random)</option>
           <option>Only with specific listings / phone numbers</option>
           <option>Started after a recent VAN update</option>
-          <option>Other</option>
+          <option value="other">Other</option>
         </select>
+      </div>
+      <div class="field conditional" id="call-frequency-other-wrap">
+        <label>Please specify "Other"<span class="req">*</span></label>
+        <input type="text" name="call-frequency-other-detail">
       </div>
 
       <div class="field">
@@ -475,8 +492,12 @@
           <label><input type="checkbox" name="pu-error-action"> Error message when performing an action</label>
           <label><input type="checkbox" name="pu-slow"> Platform noticeably slower than usual</label>
           <label><input type="checkbox" name="pu-broken"> Layout broken or elements misaligned</label>
-          <label><input type="checkbox" name="pu-other"> Other</label>
+          <label><input type="checkbox" name="pu-other" id="pu-other" data-other-for="pu-other-wrap"> Other</label>
         </div>
+      </div>
+      <div class="field conditional" id="pu-other-wrap">
+        <label>Please specify "Other" symptom<span class="req">*</span></label>
+        <input type="text" name="pu-other-detail">
       </div>
 
       <div class="field">
@@ -490,8 +511,12 @@
           <label><input type="checkbox" name="pu-area-rep"> Reports</label>
           <label><input type="checkbox" name="pu-area-comm"> Communication / calls</label>
           <label><input type="checkbox" name="pu-area-todo"> To-Do / task list</label>
-          <label><input type="checkbox" name="pu-area-other"> Other</label>
+          <label><input type="checkbox" name="pu-area-other" id="pu-area-other" data-other-for="pu-area-other-wrap"> Other</label>
         </div>
+      </div>
+      <div class="field conditional" id="pu-area-other-wrap">
+        <label>Please specify "Other" area<span class="req">*</span></label>
+        <input type="text" name="pu-area-other-detail">
       </div>
 
       <div class="field">
@@ -514,14 +539,18 @@
 
       <div class="field">
         <label>Browser used</label>
-        <select name="pu-browser">
+        <select name="pu-browser" id="pu-browser" data-other-for="pu-browser-other-wrap">
           <option value="">Please Select</option>
           <option>Chrome</option>
           <option>Firefox</option>
           <option>Edge</option>
           <option>Safari</option>
-          <option>Other</option>
+          <option value="other">Other</option>
         </select>
+      </div>
+      <div class="field conditional" id="pu-browser-other-wrap">
+        <label>Please specify "Other" browser<span class="req">*</span></label>
+        <input type="text" name="pu-browser-other-detail">
       </div>
     </div>
 
@@ -541,8 +570,12 @@
           <label><input type="checkbox" name="vauto-ymmt"> Year / Make / Model / Trim</label>
           <label><input type="checkbox" name="vauto-mileage"> Mileage / odometer</label>
           <label><input type="checkbox" name="vauto-nothing"> Nothing is being pushed (entire vehicle missing)</label>
-          <label><input type="checkbox" name="vauto-other"> Other</label>
+          <label><input type="checkbox" name="vauto-other" id="vauto-other" data-other-for="vauto-other-wrap"> Other</label>
         </div>
+      </div>
+      <div class="field conditional" id="vauto-other-wrap">
+        <label>Please specify "Other" field<span class="req">*</span></label>
+        <input type="text" name="vauto-other-detail">
       </div>
 
       <div class="field">
@@ -551,8 +584,12 @@
           <label><input type="radio" name="vauto-status" value="synced"> Shows synced</label>
           <label><input type="radio" name="vauto-status" value="error"> Shows error</label>
           <label><input type="radio" name="vauto-status" value="pending"> Shows pending</label>
-          <label><input type="radio" name="vauto-status" value="other"> Other</label>
+          <label><input type="radio" name="vauto-status" id="vauto-status-other" value="other" data-other-for="vauto-status-other-wrap"> Other</label>
         </div>
+      </div>
+      <div class="field conditional" id="vauto-status-other-wrap">
+        <label>Please specify "Other" status<span class="req">*</span></label>
+        <input type="text" name="vauto-status-other-detail">
       </div>
 
       <div class="field">
@@ -634,14 +671,17 @@
 
       <div class="field">
         <label>Reason for request<span class="req">*</span></label>
-        <select name="newfb-reason" id="newfb-reason">
+        <select name="newfb-reason" id="newfb-reason" data-other-for="newfb-reason-other-wrap">
           <option value="">Please Select</option>
           <option value="banned">Account got banned (removed from Back Office)</option>
           <option value="additional">Need an additional account (current ones still active)</option>
-          <option value="changed-dealer">Changed dealer (new account needed)</option>
           <option value="permanent">Account permanently disabled and can't recover</option>
           <option value="other">Other</option>
         </select>
+      </div>
+      <div class="field conditional" id="newfb-reason-other-wrap">
+        <label>Please specify "Other"<span class="req">*</span></label>
+        <input type="text" name="newfb-reason-other-detail">
       </div>
 
       <!-- ===== Managed Buyer flow ===== -->
@@ -709,7 +749,7 @@
 
       <div class="field">
         <label>Reason for the request<span class="req">*</span></label>
-        <select name="bo-reason">
+        <select name="bo-reason" id="bo-reason" data-other-for="bo-reason-other-wrap">
           <option value="">Please Select</option>
           <option>Can't log in (forgot credentials)</option>
           <option>Account locked or suspended</option>
@@ -717,8 +757,12 @@
           <option>Need access to an additional dealership location</option>
           <option>Wrong permissions showing</option>
           <option>Technical error on login page</option>
-          <option>Other</option>
+          <option value="other">Other</option>
         </select>
+      </div>
+      <div class="field conditional" id="bo-reason-other-wrap">
+        <label>Please specify "Other"<span class="req">*</span></label>
+        <input type="text" name="bo-reason-other-detail">
       </div>
 
       <div class="field">
@@ -751,6 +795,21 @@
           <label><input type="radio" name="bo-asked-mgr" value="dunno"> Don't know who to ask</label>
         </div>
       </div>
+    </div>
+
+    <!-- ===== STEP 6: self-rate urgency (after they've described the issue) ===== -->
+
+    <div class="field">
+      <label>Impact on your work<span class="req">*</span></label>
+      <span class="sublabel">Describes your impact. Support sets the final priority.</span>
+      <select name="impact" id="impact" required>
+        <option value="">Please Select</option>
+        <option value="P1">P1 — Urgent: 0 active FB accounts / completely unable to work</option>
+        <option value="P2">P2 — High: 1 active FB account / severely limited</option>
+        <option value="P3">P3 — Medium: affects work but I can continue with workarounds</option>
+        <option value="P4">P4 — Low: minor inconvenience, not blocking</option>
+        <option value="P5">P5 — Info: feedback or suggestion</option>
+      </select>
     </div>
 
     <div class="recaptcha">
@@ -841,6 +900,31 @@
     var dealerNewFB = current === 'request-newfb' && userType === 'dealer';
     if (connectWrap) connectWrap.classList.toggle('show', dealerNewFB && provide === 'connect');
     if (createWrap) createWrap.classList.toggle('show', dealerNewFB && provide === 'create');
+
+    // v5.1: Generic "Other → please specify" pattern.
+    // Any element with data-other-for="<id>" reveals the wrapper at that id when:
+    //   - SELECT: value is "other"
+    //   - CHECKBOX: checked
+    //   - RADIO with value="other": that radio is checked
+    document.querySelectorAll('[data-other-for]').forEach(function(el) {
+      var wrap = document.getElementById(el.getAttribute('data-other-for'));
+      if (!wrap) return;
+      var show = false;
+      if (el.tagName === 'SELECT') {
+        show = (el.value || '').toLowerCase() === 'other';
+      } else if (el.type === 'checkbox') {
+        show = el.checked;
+      } else if (el.type === 'radio') {
+        show = el.checked && (el.value || '').toLowerCase() === 'other';
+      }
+      wrap.classList.toggle('show', !!show);
+      // Sync required + clear value when hidden, so stale text doesn't get submitted
+      var detail = wrap.querySelector('input[type="text"], textarea');
+      if (detail) {
+        detail.required = !!show;
+        if (!show) detail.value = '';
+      }
+    });
   }
 
   document.getElementById('ticket-form').addEventListener('change', updateVisibility);
