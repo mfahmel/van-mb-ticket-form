@@ -798,11 +798,12 @@
     </div>
 
     <!-- ===== STEP 6: self-rate urgency (after they've described the issue) ===== -->
+    <!-- v5.2: Impact is hidden for Dealer + Request — New FB account (administrative request, no impact rating needed) -->
 
-    <div class="field">
+    <div class="field" id="impact-wrap">
       <label>Impact on your work<span class="req">*</span></label>
       <span class="sublabel">Describes your impact. Support sets the final priority.</span>
-      <select name="impact" id="impact" required>
+      <select name="impact" id="impact">
         <option value="">Please Select</option>
         <option value="P1">P1 — Urgent: 0 active FB accounts / completely unable to work</option>
         <option value="P2">P2 — High: 1 active FB account / severely limited</option>
@@ -900,6 +901,16 @@
     var dealerNewFB = current === 'request-newfb' && userType === 'dealer';
     if (connectWrap) connectWrap.classList.toggle('show', dealerNewFB && provide === 'connect');
     if (createWrap) createWrap.classList.toggle('show', dealerNewFB && provide === 'create');
+
+    // v5.2: Hide Impact field for Dealer + Request — New FB account (administrative request, no impact rating needed).
+    var impactWrap = document.getElementById('impact-wrap');
+    var impactInput = document.getElementById('impact');
+    if (impactWrap && impactInput) {
+      var hideImpact = dealerNewFB;
+      impactWrap.style.display = hideImpact ? 'none' : '';
+      impactInput.required = !hideImpact;
+      if (hideImpact) impactInput.value = '';
+    }
 
     // v5.1: Generic "Other → please specify" pattern.
     // Any element with data-other-for="<id>" reveals the wrapper at that id when:
